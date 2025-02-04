@@ -36,7 +36,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       llmMessages: [],
     };
   }
-
+  /*
   if (
     env.OPENAI_ORG === undefined ||
     env.OPENAI_ORG.startsWith("org-") === false
@@ -52,7 +52,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       llmMessages: [],
     };
   }
-
+*/
   const requestJson = await request.json();
   const parsed = RequestParams.safeParse(requestJson);
 
@@ -103,9 +103,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const model = createGptModel({
     apiKey: env.OPENAI_KEY,
-    organization: env.OPENAI_ORG,
-    temperature: 0,
-    model: "gpt-3.5-turbo",
+    apiUrl: env.OPENAI_URL,
+    temperature: 0.7,
+    model: "gpt-4o",
   });
 
   const commandDetectChain = commandDetect.createChain<GptModelMessageFormat>();

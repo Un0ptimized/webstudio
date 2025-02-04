@@ -55,12 +55,12 @@ const env = {
    * OpenAI secrets for AI features
    *
    * OPENAI_KEY is a personal API key that you should generate here https://platform.openai.com/account/api-keys
-   * OPENAI_ORG can be found at https://platform.openai.com/account/org-settings
+   * OPENAI_URL is the base URL for the OpenAI API
    *
    * Both are mandatory as OpenAI will bill OPENAI_ORG
    */
   OPENAI_KEY: process.env.OPENAI_KEY,
-  OPENAI_ORG: process.env.OPENAI_ORG,
+  OPENAI_URL: process.env.OPENAI_URL,
 
   PEXELS_API_KEY: process.env.PEXELS_API_KEY,
 

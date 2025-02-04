@@ -42,6 +42,10 @@ export const config = {
   maxDuration: 180, // seconds
 };
 
+export const loader = async () => {
+  return new Response("GET request not supported", { status: 405 });
+};
+
 export const action = async ({ request }: ActionFunctionArgs) => {
   preventCrossOriginCookie(request);
   await checkCsrf(request);
@@ -49,34 +53,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const context = await createContext(request);
   // @todo Reinstate isFeatureEnabled('ai')
 
-  if (env.OPENAI_KEY === undefined) {
+  if (env.OPENAI_KEY === undefined || env.OPENAI_URL === undefined) {
     return {
       id: "ai",
       ...createErrorResponse({
         error: "ai.invalidApiKey",
         status: 401,
-        message: "Invalid OpenAI API key",
-        debug: "Invalid OpenAI API key",
+        message: "Invalid OpenAI API key or URL",
+        debug: "Invalid OpenAI API key or URL",
       }),
       llmMessages: [],
     };
   }
 
-  if (
-    env.OPENAI_ORG === undefined ||
-    env.OPENAI_ORG.startsWith("org-") === false
-  ) {
-    return {
-      id: "ai",
-      ...createErrorResponse({
-        error: "ai.invalidOrg",
-        status: 401,
-        message: "Invalid OpenAI API organization",
-        debug: "Invalid OpenAI API organization",
-      }),
-      llmMessages: [],
-    };
-  }
+  const OPENAI_KEY = env.OPENAI_KEY;
+  const OPENAI_URL = env.OPENAI_URL;
 
   if (env.PEXELS_API_KEY === undefined) {
     return {
@@ -160,8 +151,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const { instances } = await loadDevBuildByProjectId(context, projectId);
 
     const model = createGptModel({
-      apiKey: env.OPENAI_KEY,
-      organization: env.OPENAI_ORG,
+      apiKey: OPENAI_KEY,
+      apiUrl: OPENAI_URL,
       temperature: 0,
       model: "gpt-3.5-turbo",
     });
@@ -193,8 +184,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const llmMessages: ModelMessage[] = [];
 
   const model = createGptModel({
-    apiKey: env.OPENAI_KEY,
-    organization: env.OPENAI_ORG,
+    apiKey: OPENAI_KEY,
+    apiUrl: OPENAI_URL,
     temperature: 0,
     model: "gpt-3.5-turbo",
   });
@@ -234,8 +225,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   if (generateTemplatePrompts.length > 0) {
     const generationModel = createGptModel({
-      apiKey: env.OPENAI_KEY,
-      organization: env.OPENAI_ORG,
+      apiKey: OPENAI_KEY,
+      apiUrl: OPENAI_URL,
       temperature: 0,
       model: "gpt-4",
     });
