@@ -2,6 +2,9 @@
 
 echo "127.0.0.1 wstd.dev" >> /etc/hosts
 
+npm install -g corepack
+corepack clear
+
 sudo corepack enable
 corepack install
 
